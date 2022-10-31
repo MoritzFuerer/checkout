@@ -8,6 +8,7 @@ class CheckoutApplicationTests {
 
 	@Test
 	void contextLoads() {
+		
 	}
 
 }

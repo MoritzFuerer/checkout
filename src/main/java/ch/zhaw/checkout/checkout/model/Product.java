@@ -15,13 +15,13 @@ import lombok.NoArgsConstructor;
 
 public class Product {
     
-    
+    @NonNull
     private String id;
     @NonNull
     private String name;
     @NonNull
     private String productGroup;
-    
+    @NonNull
     private double price;
 
 }
