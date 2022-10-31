@@ -21,7 +21,7 @@ public class Product {
     private String name;
     @NonNull
     private String productGroup;
-
+    
     private double price;
 
 }
