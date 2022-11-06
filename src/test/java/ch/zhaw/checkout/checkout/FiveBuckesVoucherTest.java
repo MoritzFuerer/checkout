@@ -25,7 +25,7 @@ public class FiveBuckesVoucherTest {
         List<Product> testempty = new ArrayList<>();
         Product testprodukt = new Product("1", "Name", "gruppe1", 0.0);
         testempty.add(testprodukt);
-         FiveBuckesVoucher fiveBuckesVoucher = new FiveBuckesVoucher();
+        FiveBuckesVoucher fiveBuckesVoucher = new FiveBuckesVoucher();
 
         System.out.println(fiveBuckesVoucher.getDiscount(testempty)+ "Test Erfolgreich");
         
