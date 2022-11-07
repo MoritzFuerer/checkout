@@ -15,7 +15,7 @@ public class TwoForOneVoucher implements Voucher {
     private Product product;
 
     @Override
-    public Double getDiscount(List<Product> products) {
+    public double getDiscount(List<Product> products) {
         double discount = 0.0;
         if (products.size() <= 1) {
             return discount;

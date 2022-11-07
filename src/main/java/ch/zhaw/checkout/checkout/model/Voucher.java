@@ -5,7 +5,7 @@ import java.util.List;
 
 
 public interface Voucher {
-    abstract Double getDiscount(List<Product> products);
+    abstract double getDiscount(List<Product> products);
 
 
 } 

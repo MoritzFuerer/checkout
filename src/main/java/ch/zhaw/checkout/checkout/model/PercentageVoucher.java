@@ -4,16 +4,25 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
+
+
 @Getter
 
 public class PercentageVoucher implements Voucher {
-    private int discount;
+    private int discount = 0;
+
+    public PercentageVoucher(int discount){
+        if (discount <= 0){
+        throw new RuntimeException("Error: Discount value muts be greater zero.");
+    } else if (discount > 50) {
+        throw new RuntimeException("Error: Discount value must less or equal 50.");
+    } else {
+        this.discount = discount;}
+    }
 
     @Override
-    public Double getDiscount(List<Product> products){
+    public double getDiscount(List<Product> products){
     
     Double summe = products.stream().collect(Collectors.summingDouble(x -> x.getPrice()));
    

@@ -2,18 +2,16 @@ package ch.zhaw.checkout.checkout.model;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.util.stream.Stream;
 
 
-@NoArgsConstructor
-@Getter
+
+
 
 public class FiveBuckesVoucher implements Voucher {
 
-    public Double getDiscount(List<Product> products){
-
+    public double getDiscount(List<Product> products){
+        Stream<Product> filtered = products.stream().filter(x -> x.getPrice() > 0);
         Double summe = products.stream().collect(Collectors.summingDouble(x -> x.getPrice()));
         
         if (summe >= 10.0) {
@@ -22,5 +20,7 @@ public class FiveBuckesVoucher implements Voucher {
         return 0.0;
     }
    
+    public FiveBuckesVoucher(){
 
+}
 }
