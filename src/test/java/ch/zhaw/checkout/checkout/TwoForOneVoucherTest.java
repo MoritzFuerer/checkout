@@ -1,43 +1,41 @@
 package ch.zhaw.checkout.checkout;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import ch.zhaw.checkout.checkout.model.Product;
-import ch.zhaw.checkout.checkout.model.TwoForOneVoucher;
-
+// XXX Aufgabe 6e)
 public class TwoForOneVoucherTest {
 
-    Product testprodukt = new Product("1", "Name", "productGroup", 77);
-    private TwoForOneVoucher twoForOneVoucher = new TwoForOneVoucher(testprodukt);
- 
-    @ParameterizedTest
-    @CsvSource(value = {"0,0", "1,0", "2,1", "3,1", "4,2"})
-    void testGetDiscount(ArgumentsAccessor accessor) {
-        int amountSameProducts = accessor.getInteger(0);
-        int amountFreeProducts = accessor.getInteger(1);
-        
-        List<Product> products = new ArrayList<>();
-        
-        for(int i = 0; i <amountSameProducts; i++) {
-            products.add(testprodukt);
-        }
-        
-        double discount = twoForOneVoucher.getDiscount(products);
-        assertEquals((amountFreeProducts * 77.0), discount);
+    @Test
+    public void testOtherProduct() {
+        var product1 = new Product("id1", "name", null, 77);
+        var product2 = new Product("id2", "name", null, 77);
+
+        var voucher = new TwoForOneVoucher(product1);
+        var products = new ArrayList<Product>();
+        products.add(product1);
+        products.add(product2);
+
+        assertEquals(0, voucher.getDiscount(products), 0.01);
     }
 
-    @Test
-    void testZeroDiscount() {
-        double discount = twoForOneVoucher.getDiscount(List.of(
-            new Product("2", "Product 1", "Tester", 42.0),
-            new Product("3", "Product 2", "Tester", 77.0)));
-        assertEquals(0.0, discount);
+    @ParameterizedTest
+    @CsvSource({ "0,0", "1,0", "2,1", "3,1", "4,2" })
+    public void testMultipleProducts(ArgumentsAccessor argumentsAccessor) {
+        var product = new Product("id", "name", null, 77);
+        var voucher = new TwoForOneVoucher(product);
+        var products = new ArrayList<Product>();
+        for (var i = 0; i < argumentsAccessor.getInteger(0); i++) {
+            products.add(product);
+        }
+        var expectedPrice = argumentsAccessor.getInteger(1) * 77;
+        assertEquals(expectedPrice, voucher.getDiscount(products), 0.01);
     }
+
 }

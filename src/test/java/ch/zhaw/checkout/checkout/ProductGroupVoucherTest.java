@@ -1,60 +1,54 @@
 package ch.zhaw.checkout.checkout;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import ch.zhaw.checkout.checkout.model.Product;
-import ch.zhaw.checkout.checkout.model.ProductGroupVoucher;
-
 public class ProductGroupVoucherTest {
-    
+
+    // XXX Aufgabe 7e)
     @ParameterizedTest
-    @ValueSource(ints = { 1, 2, 5, 20, 49})
-    public void korrekteRabatte(int value) {
-        ProductGroupVoucher productGroupVoucher = new ProductGroupVoucher("a", value);
+    @ValueSource(ints = { 1, 2, 5, 20, 49, Integer.MAX_VALUE })
+    public void testAmountParameter(int amount) {
+        var voucher = new ProductGroupVoucher("a", amount);
+        assertEquals(0, voucher.getDiscount(new ArrayList<Product>()));
     }
-    
+
+    // XXX Aufgabe 7e)
     @ParameterizedTest
-    @ValueSource(ints = { 0, -1, -Integer.MAX_VALUE})
-    public void falscheRabatte(int value) {
-        ProductGroupVoucher productGroupVoucher = new ProductGroupVoucher("a", value);
+    @ValueSource(ints = { 0, -1, -Integer.MAX_VALUE })
+    public void testAmountParameter_Error(int amount) {
+        var exception = assertThrows(RuntimeException.class, () -> {
+            new ProductGroupVoucher("a", amount);
+        });
+        assertEquals(ProductGroupVoucher.errorMessageAmount, exception.getMessage());
     }
 
-    @Test
-    public void fehlerhafteProduktgruppen() {
-        ProductGroupVoucher productGroupVoucher1 = new ProductGroupVoucher(" ", 42);
-        ProductGroupVoucher productGroupVoucher2 = new ProductGroupVoucher(null, 42);
-    }
-
-
+    // XXX Aufgabe 7f)
     @ParameterizedTest
-    @CsvSource(value = {"p1,5,p1,7,p1,10,10","p1,5,p1,3,p1,10,8","p1,5,p2,7,p1,10,5","p2,5,p2,7,p1,10,0","p1,11,p2,7,p1,10,10"})
-    void testGetDiscount(ArgumentsAccessor accessor) {
-        
-        Product p1 = mock(Product.class);
-        Product p2 = mock(Product.class);
-        when(p1.getProductGroup()).thenReturn(accessor.getString(0) );
-        when(p1.getPrice()).thenReturn((double) accessor.getInteger(1) );
-        when(p2.getProductGroup()).thenReturn(accessor.getString(2) );
-        when(p2.getPrice()).thenReturn((double) accessor.getInteger(3) );
+    @CsvSource({ "p1,5,p1,7,p1,10,10", "p1,5,p1,3,p1,10,8", "p1,5,p2,7,p1,10,5" })
+    void testProductGroupExample(ArgumentsAccessor argumentsAccessor) {
+        var product1 = mock(Product.class);
+        var product2 = mock(Product.class);
+        when(product1.getProductGroup()).thenReturn(argumentsAccessor.getString(0));
+        when(product1.getPrice()).thenReturn(argumentsAccessor.getDouble(1));
+        when(product2.getProductGroup()).thenReturn(argumentsAccessor.getString(2));
+        when(product2.getPrice()).thenReturn(argumentsAccessor.getDouble(3));
+        var products = new ArrayList<Product>();
+        products.add(product1);
+        products.add(product2);
 
-        ProductGroupVoucher productGroupVoucher = new ProductGroupVoucher(accessor.getString(4), accessor.getInteger(5));
-                
-        List<Product> products = new ArrayList<>();
-        products.add(p1);
-        products.add(p2);
-               
-        double discount = productGroupVoucher.getDiscount(products);
-        assertEquals((double) accessor.getInteger(6), discount);
+        var voucher = new ProductGroupVoucher(argumentsAccessor.getString(4), argumentsAccessor.getInteger(5));
+        var discount = voucher.getDiscount(products);
+        assertEquals(argumentsAccessor.getDouble(6), discount);
     }
+
 }
-
